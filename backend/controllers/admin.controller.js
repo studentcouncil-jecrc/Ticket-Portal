@@ -202,8 +202,6 @@ export const createStudent = async (req, res) => {
       email,
       branch,
       Year,
-      phone,
-      isPaid
     } = req.body;
 
     const student = await Student.create({
@@ -213,7 +211,6 @@ export const createStudent = async (req, res) => {
       branch,
       Year,
       phone: phone || null,
-      isPaid: isPaid ?? false
     });
 
     return res.status(201).json({
