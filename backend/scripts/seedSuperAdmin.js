@@ -8,8 +8,8 @@ const seedSuperAdmin = async () => {
   try {
     await connectToDB();
 
-    const email = "vanshikast05@gmail.com";
-    const password = "VST@123456";
+    const email = "superadmin@gmail.com";
+    const password = "SDC@123456";
 
     // Don't create duplicate superadmin
     const existingAdmin = await adminModel.findOne({ email });

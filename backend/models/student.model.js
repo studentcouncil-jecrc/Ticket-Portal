@@ -10,7 +10,7 @@ const studentSchema = new mongoose.Schema({
     isPaid: { type: Boolean, default: false, required: true },    
     markedBy: { type: mongoose.Schema.Types.ObjectId, ref: 'Admin', default: null },
     markedAt: { type: Date, default: null },
-    password: { type: String, trim: true, select:false },
+    password: { type: String, trim: true, select:false,default: null },
     token : { type: Number, default: 0 },
     passSent: { type: Boolean, default: false },
     events: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Event', default: [] }] 
