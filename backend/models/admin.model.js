@@ -4,35 +4,15 @@ const adminSchema = new mongoose.Schema(
   {
     name: { type: String, required: true },
     email: { type: String, required: true, unique: true },
-    password: { type: String, required: true },
-
+    password: { type: String, required: true, select:false },
 
     role: {
       type: String,
-      enum: ["superadmin", "admin", "hod", "dean"],
+      enum: ["superadmin", "admin",],
       required: true
     },
-
-    branch: {
-      type: String,
-      enum: ["CSE", "CSAI", "AIDS", "IT", "ECE", "EE", "ME", "CE"],
-      required: function () {
-        return ["hod"].includes(this.role);
-      }
-    },
-
-    year: {
-      type: Number,
-      min: 1,
-      max: 4,
-      default: 1,
-      required: function () {
-        return ["dean"].includes(this.role);
-      }
-    }
   },
   { timestamps: true }
 );
 
 export const adminModel =  mongoose.model('Admin', adminSchema);
-

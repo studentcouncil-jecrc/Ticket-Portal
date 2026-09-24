@@ -26,23 +26,8 @@ body("password")
 body("role")
     .notEmpty()
     .withMessage("Role is required")
-    .isIn(["superadmin", "admin", "hod", "dean"])
+    .isIn(["superadmin", "admin",])
     .withMessage("Invalid role"),
-
-body("branch")
-    .if((value, { req }) => req.body.role === "hod")
-    .notEmpty()
-    .withMessage("Branch is required for HOD")
-    .isIn(["CSE", "CSAI", "AIDS", "IT", "ECE", "EE", "ME", "CE"])
-    .withMessage("Invalid branch"),
-
-body("year")
-    .if((value, { req }) => req.body.role === "dean")
-    .notEmpty()
-    .withMessage("Year is required for Dean")
-    .isInt({ min: 1, max: 4 })
-    .withMessage("Year must be between 1 and 4")
-    .toInt()
 ];
 
 

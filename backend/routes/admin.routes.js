@@ -1,11 +1,12 @@
 import express from 'express'
-import { adminLogin, createStudent, getStudents, searchStudents } from '../controllers/admin.controller.js';
+import { adminLogin, createStudent, deleteStudent, getStudents, searchStudents } from '../controllers/admin.controller.js';
 import { validateAdminLogin, validateCreateAdmin } from '../validators/admin.validator.js';
 import { validate } from '../middlewares/validate.middleware.js';
 import { createAdmin, getAdmins, deleteAdmin } from '../controllers/admin.controller.js';
 import { checkRole } from '../middlewares/checkRole.middleware.js';
 import { authAdminMiddleware } from '../middlewares/authAdmin.middleware.js';
 import { validateAddStudent } from '../validators/student.validator.js';
+import { sendTicket } from '../controllers/ticket.controller.js';
 
 
 const router = express.Router();
@@ -13,7 +14,7 @@ const router = express.Router();
 
 
 
-// Admin Login
+
 router.post("/loginAdmin",
   validateAdminLogin,
   validate,
@@ -48,29 +49,36 @@ router.post("/createStudent",
   validateAddStudent, 
   validate,
   createStudent
-)
+);
 
 
 router.get("/searchStudents",
   authAdminMiddleware,
   searchStudents
-)
+);
 
 
 router.get("/getStudents",
   authAdminMiddleware,
   getStudents
-)
+);
+
+
+router.delete(
+  "/deleteStudent",
+  authAdminMiddleware,
+  checkRole("admin", "superadmin"),
+  deleteStudent
+);
+
+router.patch('/send-ticket', 
+  authAdminMiddleware,
+  checkRole("superadmin", "admin"),
+  sendTicket
+);
 
 
 
-// router.post(
-//   "/upload-excel",
-//   authAdminMiddleware,
-//   checkRole("superadmin", "admin"),
-//   upload.single("file"),
-//   registerStudentsFromExcel
-// );
 
 
 export default router;

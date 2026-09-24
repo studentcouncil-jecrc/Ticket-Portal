@@ -6,14 +6,15 @@ const studentSchema = new mongoose.Schema({
     email: { type: String, required: true, unique: true, trim: true, lowercase: true },
     branch: { type: String, required: true, trim: true },
     Year: { type: Number, required: true },
-    phone: { type: String, trim: true, default: null },
     isPaid: { type: Boolean, default: false, required: true },    
     markedBy: { type: mongoose.Schema.Types.ObjectId, ref: 'Admin', default: null },
     markedAt: { type: Date, default: null },
-    password: { type: String, trim: true, select:false,default: null },
-    token : { type: Number, default: 0 },
-    passSent: { type: Boolean, default: false },
-    events: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Event', default: [] }] 
+
+    ticketStatus: {
+    type: String,
+    enum: ["NOT_SENT", "PROCESSING", "SENT", "FAILED", "QUEUED"],
+    default: "NOT_SENT"
+},
 });
 
 const Student = mongoose.model('Student', studentSchema);

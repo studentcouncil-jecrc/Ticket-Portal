@@ -10,9 +10,9 @@ export const adminLogin = async (req, res) => {
 try {
     const { email, password } = req.body;
 
-    const admin = await adminModel.findOne({
+const admin = await adminModel.findOne({
     email: email.trim().toLowerCase()
-    });
+}).select("+password");
 
     if (!admin) {
     return res.status(401).json({
@@ -37,8 +37,6 @@ try {
     {
         id: admin._id,
         role: admin.role,
-        branch: admin.branch ?? null,
-        year: admin.year ?? null
     },
     process.env.JWT_SECRET,
     { expiresIn: "7d" }
@@ -67,8 +65,6 @@ try {
     email,
     password,
     role,
-    branch,
-    year
     } = req.body;
 
     const normalizedEmail = email.trim().toLowerCase();
@@ -94,8 +90,6 @@ try {
       email: normalizedEmail,
       password: hashedPassword,
       role,
-      branch: branch || undefined,
-      year: year || undefined
     });
 
     return res.status(201).json({
@@ -106,8 +100,6 @@ try {
         name: admin.name,
         email: admin.email,
         role: admin.role,
-        branch: admin.branch ?? null,
-        year: admin.year ?? null
       }
     });
 
@@ -142,8 +134,6 @@ export const getAdmins = async (req, res) => {
     });
   }
 };
-
-
 
 
 export const deleteAdmin = async (req, res) => {
@@ -210,7 +200,6 @@ export const createStudent = async (req, res) => {
       email,
       branch,
       Year,
-      phone: phone || null,
     });
 
     return res.status(201).json({
@@ -223,9 +212,7 @@ export const createStudent = async (req, res) => {
         email: student.email,
         branch: student.branch,
         Year: student.Year,
-        phone: student.phone,
         isPaid: student.isPaid,
-        token: student.token,
         passSent: student.passSent,
       }
     });
@@ -250,36 +237,34 @@ export const createStudent = async (req, res) => {
 };
 
 
-export const getStudents = async (req, res) => {           
-
+export const getStudents = async (req, res) => {
   try {
-    const { role, branch, year } = req.user;
-    let query = {};
+    const { role } = req.user;
 
-    if (role === "superadmin" || role === "admin") {
-      query = {};
-    } else if (role === "hod") {
-      // HODs can see only 2nd, 3rd, 4th year students in their branch
-      query = { branch, Year: { $ne: 1 } };
-    } else if (role === "dean") {
-      query = { Year: Number(year ?? 1) };
-    } else {
-      return res.status(403).json({ msg: "Not allowed to view students" });
+    // Only allowed roles can view students
+    if (!["superadmin", "admin"].includes(role)) {
+      return res.status(403).json({
+        msg: "Not allowed to view students"
+      });
     }
 
-    // Get counts without loading full documents into memory
+    // Get stats for ALL students
     const [stats] = await Student.aggregate([
-      { $match: query },
       {
         $group: {
           _id: null,
           count: { $sum: 1 },
-          paidCount: { $sum: { $cond: ["$isPaid", 1, 0] } },
+          paidCount: {
+            $sum: {
+              $cond: ["$isPaid", 1, 0]
+            }
+          }
         }
       }
     ]);
 
-    const students = await Student.find(query)
+    // Get ALL students
+    const students = await Student.find({})
       .select("name email phone branch Year isPaid")
       .sort({ Year: 1, name: 1 })
       .lean();
@@ -293,17 +278,28 @@ export const getStudents = async (req, res) => {
 
   } catch (err) {
     console.error("Fetch students error:", err);
-    res.status(500).json({ msg: "Error fetching students" });
+
+    res.status(500).json({
+      msg: "Error fetching students"
+    });
   }
+};
 
-}
 
-
-export const searchStudents = async (req, res) => {             //when an student is searched by name this will return matched values.
+export const searchStudents = async (req, res) => {
   try {
-    const { role, branch, year } = req.user;
+    const { role } = req.user;
     const { query } = req.query;
 
+    // Check permission
+    if (!["superadmin", "admin"].includes(role)) {
+      return res.status(403).json({
+        success: false,
+        msg: "Not allowed to search students"
+      });
+    }
+
+    // Check search query
     if (!query || !query.trim()) {
       return res.status(400).json({
         success: false,
@@ -311,38 +307,13 @@ export const searchStudents = async (req, res) => {             //when an studen
       });
     }
 
-    let filter = {};
-
-    if (role === "superadmin" || role === "admin") {
-      filter = {};
-    }
-
-    else if (role === "hod") {
-      filter = {
-        branch,
-        Year: { $in: [2, 3, 4] }
-      };
-    }
-
-    else if (role === "dean") {
-      filter = {
-        Year: Number(year)
-      };
-    }
-
-    else {
-      return res.status(403).json({
-        success: false,
-        msg: "Not allowed to search students"
-      });
-    }
-
-    filter.name = {
-      $regex: query.trim(),
-      $options: "i"
-    };
-
-    const students = await Student.find(filter)
+    // Search ALL students by email
+    const students = await Student.find({
+      email: {
+        $regex: query.trim(),
+        $options: "i"
+      }
+    })
       .select("name studentId email phone branch Year isPaid")
       .limit(10)
       .lean();
@@ -359,6 +330,47 @@ export const searchStudents = async (req, res) => {             //when an studen
     return res.status(500).json({
       success: false,
       msg: "Search failed"
+    });
+  }
+};
+
+
+export const deleteStudent = async (req, res) => {
+  try {
+    const { id } = req.body;
+
+    if (!id) {
+      return res.status(400).json({
+        success: false,
+        msg: "Student ID is required"
+      });
+    }
+
+    const student = await Student.findById(id);
+
+    if (!student) {
+      return res.status(404).json({
+        success: false,
+        msg: "Student not found"
+      });
+    }
+
+
+    await Student.deleteOne({
+      _id: id
+    });
+
+    return res.status(200).json({
+      success: true,
+      msg: "Student deleted successfully"
+    });
+
+  } catch (err) {
+    console.error("Delete student error:", err);
+
+    return res.status(500).json({
+      success: false,
+      msg: "Failed to delete student"
     });
   }
 };
