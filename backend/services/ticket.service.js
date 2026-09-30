@@ -15,9 +15,8 @@ const __dirname = path.dirname(__filename);
 
 // CONSTANTS
 
-const WIDTH = 5880;
-const HEIGHT = 2209;
-
+const WIDTH = 1250;
+const HEIGHT = 418;
 
 // GENERATE QR CODE
 
@@ -25,8 +24,10 @@ export async function generateQRCode(data) {
   return await qrcode.toBuffer(data, {
     type: "png",
     errorCorrectionLevel: "H",
+    margin: 0,
+    version: 10,
     color: {
-      dark: "#000000",
+      dark: "#ffffff",
       light: "#00000000"
     }
   });
@@ -76,7 +77,7 @@ export const processStudentTicket = async (mId) => {
       mId: student._id.toString(),
       name: student.name,
       branch: student.branch,
-      year: student.Year
+      year: student.Year,
     });
 
     const qrBuffer = await generateQRCode(qrPayload);
@@ -148,16 +149,16 @@ export const processStudentTicket = async (mId) => {
 
     // 8. QR CODE
 
-    const qrSize = 1600;
+    const qrWidth = 198;
+    const qrHegiht = 198;
 
-    const qrX = 338;
+    const qrX = 104;
 
-    const qrY =
-      (HEIGHT - qrSize) / 2;
+    const qrY = 110;
 
 
     const resizedQr = await sharp(qrBuffer)
-      .resize(qrSize, qrSize)
+      .resize(qrWidth, qrHegiht)
       .toBuffer();
 
 
@@ -170,160 +171,127 @@ export const processStudentTicket = async (mId) => {
       qrImage,
       qrX,
       qrY,
-      qrSize,
-      qrSize
+      qrWidth,
+      qrHegiht
     );
 
 
-    // 9. TEXT SECTION
+// 9. TEXT SECTION
 
-    const textX = 2660;
+const textX = 758;
 
-    let textY = 1000;
-
-
-    ctx.fillStyle = "#223041";
-
-    ctx.textAlign = "left";
+ctx.fillStyle = "#000000";
+ctx.textAlign = "left";
+ctx.textBaseline = "alphabetic";
 
 
-    // AUTO FONT SIZE
+// ==========================================
+// AUTO FONT SIZE
+// ==========================================
 
-    const fitFontSize = (
-      text,
-      fontFamily,
-      maxWidth,
-      maxSize = 180,
-      minSize = 40,
-      step = 2
-    ) => {
+const fitFontSize = (
+  text,
+  fontFamily,
+  maxWidth,
+  maxSize,
+  minSize = 30,
+  step = 1
+) => {
 
-      let size = maxSize;
+  let size = maxSize;
 
-      ctx.font =
-        `${size}px ${fontFamily}`;
+  ctx.font = `${size}px ${fontFamily}`;
 
+  while (
+    ctx.measureText(text).width > maxWidth &&
+    size > minSize
+  ) {
 
-      while (
-        ctx.measureText(text).width > maxWidth &&
-        size > minSize
-      ) {
+    size -= step;
 
-        size -= step;
+    ctx.font = `${size}px ${fontFamily}`;
+  }
 
-        ctx.font =
-          `${size}px ${fontFamily}`;
-      }
-
-      return size;
-    };
-
-
-    const rightMargin = 380;
-
-    const maxTextWidth =
-      WIDTH - textX - rightMargin;
+  return size;
+};
 
 
-    // NAME
+// ==========================================
+// TEXT WIDTH
+// ==========================================
 
-    const nameText =
-      `NAME: ${student.name.toUpperCase()}`;
+// 100px space on the right
+const rightMargin = 100;
 
-    const nameFont =
-      "Bebas Neue";
-
-
-    const nameSize = fitFontSize(
-      nameText,
-      nameFont,
-      maxTextWidth,
-      180,
-      60,
-      2
-    );
+const maxTextWidth =
+  WIDTH - textX - rightMargin;
 
 
-    ctx.font =
-      `${nameSize}px ${nameFont}`;
+// ==========================================
+// NAME
+// ==========================================
+
+const nameText =
+  student.name.toUpperCase();
+
+const nameFont =
+  "Bebas Neue";
+
+const nameSize = fitFontSize(
+  nameText,
+  nameFont,
+  maxTextWidth,
+  65,
+  40,
+  1
+);
+
+ctx.font =
+  `${nameSize}px ${nameFont}`;
+
+ctx.fillText(
+  nameText,
+  textX,
+  175
+);
 
 
-    ctx.fillText(
-      nameText,
-      textX,
-      textY
-    );
+// ==========================================
+// BRANCH + YEAR
+// ==========================================
 
+const yearText =
+  student.Year === 1 ? "1ST YEAR" :
+  student.Year === 2 ? "2ND YEAR" :
+  student.Year === 3 ? "3RD YEAR" :
+  `${student.Year}TH YEAR`;
 
-    textY +=
-      Math.round(nameSize * 1.2) + 10;
+const branchText =
+  String(student.branch || "").toUpperCase();
 
+const branchYearText =
+  `${branchText}, ${yearText}`;
 
-    // YEAR
+const branchYearFont =
+  "Bebas Neue";
 
-    const yearText =
-      `YEAR: ${student.Year}`;
+const branchYearSize = fitFontSize(
+  branchYearText,
+  branchYearFont,
+  maxTextWidth,
+  60,
+  40,
+  1
+);
 
-    const yearFont =
-      "Bebas Neue";
+ctx.font =
+  `${branchYearSize}px ${branchYearFont}`;
 
-
-    const yearSize = fitFontSize(
-      yearText,
-      yearFont,
-      maxTextWidth,
-      150,
-      40,
-      2
-    );
-
-
-    ctx.font =
-      `${yearSize}px ${yearFont}`;
-
-
-    ctx.fillText(
-      yearText,
-      textX,
-      textY
-    );
-
-
-    textY +=
-      Math.round(yearSize * 1.2) + 8;
-
-
-    // BRANCH
-
-    const branchText =
-      `BRANCH: ${String(
-        student.branch || ""
-      ).toUpperCase()}`;
-
-
-    const branchFont =
-      "Bebas Neue";
-
-
-    const branchSize = fitFontSize(
-      branchText,
-      branchFont,
-      maxTextWidth,
-      150,
-      40,
-      2
-    );
-
-
-    ctx.font =
-      `${branchSize}px ${branchFont}`;
-
-
-    ctx.fillText(
-      branchText,
-      textX,
-      textY
-    );
+ctx.fillText(
+  branchYearText,
+  textX ,
+  245
+);
 
 
     // 10. FINAL TICKET IMAGE

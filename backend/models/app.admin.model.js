@@ -1,0 +1,35 @@
+import mongoose from "mongoose";
+
+const appAdminSchema = new mongoose.Schema(
+  {
+    name: {
+      type: String,
+      required: true,
+      trim: true
+    },
+
+    email: {
+      type: String,
+      required: true,
+      unique: true,
+      lowercase: true,
+      trim: true
+    },
+
+    password: {
+      type: String,
+      required: true
+    },
+    isLoggedIn: {
+      type: Boolean,
+      default: false
+    },
+  },
+  {
+    timestamps: true
+  }
+);
+
+const AppAdmin = mongoose.model("AppAdmin", appAdminSchema);
+
+export default AppAdmin;

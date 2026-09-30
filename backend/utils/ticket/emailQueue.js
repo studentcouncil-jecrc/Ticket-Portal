@@ -4,7 +4,7 @@ import dotenv from 'dotenv';
 
 dotenv.config();
 
-const concurrency = parseInt(process.env.EMAIL_CONCURRENCY || '5', 10);
+const concurrency = parseInt('1', 10);
 const limit = pLimit(concurrency);
 
 export const enqueueEmail = (fn) => {

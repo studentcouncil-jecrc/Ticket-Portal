@@ -9,12 +9,15 @@ const studentSchema = new mongoose.Schema({
     isPaid: { type: Boolean, default: false, required: true },    
     markedBy: { type: mongoose.Schema.Types.ObjectId, ref: 'Admin', default: null },
     markedAt: { type: Date, default: null },
-
     ticketStatus: {
     type: String,
     enum: ["NOT_SENT", "PROCESSING", "SENT", "FAILED", "QUEUED"],
     default: "NOT_SENT"
 },
+    isScanned:{
+        type:Boolean,
+        default:false,
+    }
 });
 
 const Student = mongoose.model('Student', studentSchema);

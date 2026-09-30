@@ -2,20 +2,17 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
   <title>Renaissance Ticket Preview</title>
 
-  <!-- Fonts -->
-  <link
-    href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Merienda&display=swap"
-    rel="stylesheet"
-  />
-
-  <!-- QR Code Library -->
-  <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 
   <style>
+
+    @font-face {
+      font-family: "Bebas Neue";
+      src: url("./assets/fonts/Bebas_Neue/BebasNeue-Regular.ttf");
+    }
 
     * {
       box-sizing: border-box;
@@ -23,186 +20,185 @@
 
     body {
       margin: 0;
-      min-height: 100vh;
       background: #222;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      padding: 30px;
-      font-family: Arial, sans-serif;
     }
 
-    .wrapper {
-      width: 100%;
-      max-width: 1200px;
-    }
 
-    /* =========================
+    /* =========================================
        TICKET
-    ========================= */
+       ACTUAL SIZE = 5880 × 2209
 
-    .ticket {
+       Displayed at 1176 × 441.8
+       Scale = 0.2
+       ========================================= */
+
+    #ticket {
+      width: 1176px;
+      height: 441.8px;
+
       position: relative;
 
-      width: 100%;
-      aspect-ratio: 5880 / 2209;
+      margin: 50px auto;
 
       background-image: url("./ticket.png");
       background-size: 100% 100%;
-      background-position: center;
       background-repeat: no-repeat;
 
       overflow: hidden;
     }
 
 
-    /* =========================
+    /* =========================================
        QR CODE
-    ========================= */
 
-    .qr-container {
+       Backend:
+
+       qrSize = 1600
+       qrX = 338
+       qrY = (2209 - 1600) / 2
+           = 304.5
+       ========================================= */
+
+    #qr {
       position: absolute;
-
-      /*
-        Canvas:
-        qrX = 338
-        qrY = (2209 - 1600) / 2
-        qrSize = 1600
-      */
 
       left: calc(338 / 5880 * 100%);
       top: calc(304.5 / 2209 * 100%);
 
       width: calc(1600 / 5880 * 100%);
       height: calc(1600 / 2209 * 100%);
-
-      display: flex;
-      justify-content: center;
-      align-items: center;
     }
 
-    #qrcode {
-      width: 100%;
-      height: 100%;
-    }
+    #qr canvas {
+      display: block;
 
-    #qrcode img,
-    #qrcode canvas {
       width: 100% !important;
       height: 100% !important;
     }
 
 
-    /* =========================
+    /* =========================================
        TEXT
-    ========================= */
+
+       Backend:
+
+       textX = 2660
+       ========================================= */
 
     .text-section {
       position: absolute;
 
-      /*
-        Canvas:
-        textX = 2660
-      */
-
       left: calc(2660 / 5880 * 100%);
 
-      /*
-        Canvas:
-        textY = 1000
-        Canvas uses baseline positioning,
-        so this is approximate in HTML.
-      */
+      top: 0;
 
-      top: calc(850 / 2209 * 100%);
+      width: calc(
+        (5880 - 2660 - 380) / 5880 * 100%
+      );
 
-      width: calc(2840 / 5880 * 100%);
-
-      color: #223041;
+      height: 100%;
     }
 
 
-    .ticket-text {
+    .text {
+      position: absolute;
+
       font-family: "Bebas Neue", sans-serif;
+
+      color: #000;
 
       margin: 0;
 
-      line-height: 1.1;
-
       white-space: nowrap;
-
-      overflow: hidden;
-
-      text-overflow: clip;
     }
 
 
-    .name {
-      font-size: clamp(30px, 3.05vw, 180px);
-      margin-bottom: 20px;
+    /* =========================================
+       NAME
+
+       Backend:
+
+       font-size max = 180
+       displayed = 180 × 0.2 = 36px
+
+       textY = 1000
+       ========================================= */
+
+    #name {
+
+      left: 0;
+
+      top: calc(
+        1000 / 2209 * 100%
+      );
+
+      transform: translateY(-100%);
+
+      font-size: 36px;
     }
 
 
-    .year {
-      font-size: clamp(25px, 2.55vw, 150px);
-      margin-bottom: 15px;
+    /* =========================================
+       YEAR
+
+       Backend:
+
+       nameSize = 180
+
+       textY +=
+         round(180 × 1.2) + 10
+
+       = 1000 + 226
+
+       = 1226
+
+       Displayed:
+       1226 × 0.2 = 245.2px
+       ========================================= */
+
+    #year {
+
+      left: 0;
+
+      top: calc(
+        1226 / 2209 * 100%
+      );
+
+      transform: translateY(-100%);
+
+      font-size: 30px;
     }
 
 
-    .branch {
-      font-size: clamp(25px, 2.55vw, 150px);
-    }
+    /* =========================================
+       BRANCH
 
+       Backend:
 
-    /* =========================
-       CONTROLS
-    ========================= */
+       yearSize = 150
 
-    .controls {
-      margin-top: 25px;
+       textY +=
+         round(150 × 1.2) + 8
 
-      background: white;
+       = 1226 + 188
 
-      padding: 20px;
+       = 1414
 
-      border-radius: 10px;
-    }
+       Displayed:
+       1414 × 0.2 = 282.8px
+       ========================================= */
 
-    .controls h2 {
-      margin-top: 0;
-    }
+    #branch {
 
-    .field {
-      margin-bottom: 15px;
-    }
+      left: 0;
 
-    .field label {
-      display: block;
-      font-weight: bold;
-      margin-bottom: 5px;
-    }
+      top: calc(
+        1414 / 2209 * 100%
+      );
 
-    .field input {
-      width: 100%;
-      padding: 10px;
+      transform: translateY(-100%);
 
-      font-size: 16px;
-
-      border: 1px solid #ccc;
-      border-radius: 5px;
-    }
-
-
-    button {
-      padding: 10px 20px;
-
-      border: none;
-
-      border-radius: 5px;
-
-      cursor: pointer;
-
-      font-size: 16px;
+      font-size: 30px;
     }
 
   </style>
@@ -211,237 +207,113 @@
 
 <body>
 
-  <div class="wrapper">
 
-    <!-- =========================
-         TICKET
-    ========================== -->
+  <div id="ticket">
 
-    <div class="ticket">
 
-      <!-- QR -->
-      <div class="qr-container">
-        <div id="qrcode"></div>
+    <!-- QR -->
+
+    <div id="qr"></div>
+
+
+    <!-- TEXT -->
+
+    <div class="text-section">
+
+      <div id="name" class="text">
+        PRASHANT SHARMA
       </div>
 
+      <div id="year" class="text">
+        3RD YEAR
+      </div>
 
-      <!-- TEXT -->
-      <div class="text-section">
-
-        <p
-          id="nameText"
-          class="ticket-text name"
-        >
-          NAME: PRASHANT SHARMA
-        </p>
-
-
-        <p
-          id="yearText"
-          class="ticket-text year"
-        >
-          YEAR: 2
-        </p>
-
-
-        <p
-          id="branchText"
-          class="ticket-text branch"
-        >
-          BRANCH: CSE
-        </p>
-
+      <div id="branch" class="text">
+        COMPUTER SCIENCE
       </div>
 
     </div>
 
-
-    <!-- =========================
-         CONTROLS
-    ========================== -->
-
-    <div class="controls">
-
-      <h2>Ticket Preview Controls</h2>
-
-
-      <div class="field">
-
-        <label>
-          Name
-        </label>
-
-        <input
-          id="nameInput"
-          type="text"
-          value="Prashant Sharma"
-        />
-
-      </div>
-
-
-      <div class="field">
-
-        <label>
-          Year
-        </label>
-
-        <input
-          id="yearInput"
-          type="text"
-          value="2"
-        />
-
-      </div>
-
-
-      <div class="field">
-
-        <label>
-          Branch
-        </label>
-
-        <input
-          id="branchInput"
-          type="text"
-          value="CSE"
-        />
-
-      </div>
-
-
-      <div class="field">
-
-        <label>
-          QR Data
-        </label>
-
-        <input
-          id="qrInput"
-          type="text"
-          value='{"studentMongoId":"123456","name":"Prashant Sharma","branch":"CSE","year":2}'
-        />
-
-      </div>
-
-    </div>
 
   </div>
 
 
   <script>
 
-    // ==========================================
-    // ELEMENTS
-    // ==========================================
+    /*
+    ============================================================
+    ONLY CHANGE THESE
+    ============================================================
+    */
 
-    const nameInput =
-      document.getElementById("nameInput");
+    const STUDENT_ID = "JECRC12345";
 
-    const yearInput =
-      document.getElementById("yearInput");
+    const STUDENT_NAME = "PRASHANT SHARMA";
 
-    const branchInput =
-      document.getElementById("branchInput");
+    const STUDENT_BRANCH = "COMPUTER SCIENCE";
 
-    const qrInput =
-      document.getElementById("qrInput");
+    const STUDENT_YEAR = 3;
 
 
-    const nameText =
-      document.getElementById("nameText");
+    /*
+    ============================================================
+    QR PAYLOAD
+    ============================================================
+    */
 
-    const yearText =
-      document.getElementById("yearText");
-
-    const branchText =
-      document.getElementById("branchText");
-
-
-    const qrContainer =
-      document.getElementById("qrcode");
+    const qrPayload = JSON.stringify({
+      mId: STUDENT_ID,
+      name: STUDENT_NAME,
+      branch: STUDENT_BRANCH,
+      year: STUDENT_YEAR
+    });
 
 
-    // ==========================================
-    // GENERATE QR
-    // ==========================================
+    /*
+    ============================================================
+    QR
+    ============================================================
+    */
 
-    function generateQR() {
-
-      qrContainer.innerHTML = "";
-
-      new QRCode(qrContainer, {
-        text: qrInput.value,
+    new QRCode(
+      document.getElementById("qr"),
+      {
+        text: qrPayload,
 
         width: 1600,
         height: 1600,
 
-        correctLevel:
-          QRCode.CorrectLevel.H
-      });
+        correctLevel: QRCode.CorrectLevel.H,
 
-    }
+        colorDark: "#000000",
 
-
-    // ==========================================
-    // UPDATE TEXT
-    // ==========================================
-
-    function updateTicket() {
-
-      const name =
-        nameInput.value.trim();
-
-      const year =
-        yearInput.value.trim();
-
-      const branch =
-        branchInput.value.trim();
-
-
-      nameText.textContent =
-        `NAME: ${name.toUpperCase()}`;
-
-
-      yearText.textContent =
-        `YEAR: ${year}`;
-
-
-      branchText.textContent =
-        `BRANCH: ${branch.toUpperCase()}`;
-
-
-      generateQR();
-    }
-
-
-    // ==========================================
-    // LIVE UPDATE
-    // ==========================================
-
-    nameInput.addEventListener(
-      "input",
-      updateTicket
-    );
-
-    yearInput.addEventListener(
-      "input",
-      updateTicket
-    );
-
-    branchInput.addEventListener(
-      "input",
-      updateTicket
-    );
-
-    qrInput.addEventListener(
-      "input",
-      generateQR
+        colorLight: "#ffffff"
+      }
     );
 
 
-    // Initial QR
-    generateQR();
+    /*
+    ============================================================
+    TEXT
+    ============================================================
+    */
+
+    document.getElementById("name").textContent =
+      STUDENT_NAME.toUpperCase();
+
+
+    document.getElementById("year").textContent =
+      STUDENT_YEAR === 1
+        ? "1ST YEAR"
+        : STUDENT_YEAR === 2
+        ? "2ND YEAR"
+        : STUDENT_YEAR === 3
+        ? "3RD YEAR"
+        : `${STUDENT_YEAR}TH YEAR`;
+
+
+    document.getElementById("branch").textContent =
+      STUDENT_BRANCH.toUpperCase();
 
   </script>
 

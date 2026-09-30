@@ -7,6 +7,7 @@ import cors from 'cors'
 const app = express();
 import adminRoutes from './routes/admin.routes.js'
 import excelRoutes from './routes/excel.routes.js'
+import appRoutes from './routes/app.routes.js'
 
 
 connectToDB();
@@ -22,7 +23,8 @@ app.use(cors());
 
 
 app.use("/admin", adminRoutes);
-app.use("/admin", excelRoutes)
+app.use("/admin", excelRoutes);
+app.use("/app",appRoutes)
 
 
 

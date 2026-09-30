@@ -3,7 +3,7 @@ import  jwt from "jsonwebtoken";
 import {adminModel} from "../models/admin.model.js";
 import mongoose from "mongoose";
 import Student from "../models/student.model.js";
-
+import AppAdmin from "../models/app.admin.model.js";
 
 
 export const adminLogin = async (req, res) => {
@@ -37,6 +37,8 @@ const admin = await adminModel.findOne({
     {
         id: admin._id,
         role: admin.role,
+        email:admin.email,
+        name:admin.name
     },
     process.env.JWT_SECRET,
     { expiresIn: "7d" }
@@ -44,18 +46,25 @@ const admin = await adminModel.findOne({
 
     return res.status(200).json({
     success: true,
-    token
+    token,
+    admin
     });
 
 } catch (error) {
     console.error("Teacher login error:", error);
 
     return res.status(500).json({
+    error:error,
     success: false,
     msg: "Internal server error"
     });
 }
 };
+
+
+export const adminProfile = async (req, res) => {
+res.status(200).json(req.user);
+}
 
 
 export const createAdmin = async (req, res) => {
@@ -138,7 +147,7 @@ export const getAdmins = async (req, res) => {
 
 export const deleteAdmin = async (req, res) => {
   try {
-    const { id } = req.params;
+    const { id } = req.body;
 
     // Validate MongoDB ObjectId
     if (!mongoose.Types.ObjectId.isValid(id)) {
@@ -213,7 +222,6 @@ export const createStudent = async (req, res) => {
         branch: student.branch,
         Year: student.Year,
         isPaid: student.isPaid,
-        passSent: student.passSent,
       }
     });
 
@@ -249,23 +257,33 @@ export const getStudents = async (req, res) => {
     }
 
     // Get stats for ALL students
-    const [stats] = await Student.aggregate([
-      {
-        $group: {
-          _id: null,
-          count: { $sum: 1 },
-          paidCount: {
-            $sum: {
-              $cond: ["$isPaid", 1, 0]
-            }
-          }
+const [stats] = await Student.aggregate([
+  {
+    $group: {
+      _id: null,
+
+      count: {
+        $sum: 1
+      },
+
+      paidCount: {
+        $sum: {
+          $cond: ["$isPaid", 1, 0]
+        }
+      },
+
+      scannedCount: {
+        $sum: {
+          $cond: ["$isScanned", 1, 0]
         }
       }
-    ]);
+    }
+  }
+]);
 
     // Get ALL students
     const students = await Student.find({})
-      .select("name email phone branch Year isPaid")
+      .select("name email phone branch Year isPaid studentId ticketStatus")
       .sort({ Year: 1, name: 1 })
       .lean();
 
@@ -273,6 +291,7 @@ export const getStudents = async (req, res) => {
       success: true,
       count: stats?.count ?? students.length,
       paidCount: stats?.paidCount ?? 0,
+      scannedCount:stats?.scannedCount??0,
       data: students
     });
 
@@ -371,6 +390,214 @@ export const deleteStudent = async (req, res) => {
     return res.status(500).json({
       success: false,
       msg: "Failed to delete student"
+    });
+  }
+};
+
+
+export const createAppAdmin = async (req, res) => {
+  try {
+    const { name, email, password } = req.body;
+
+    const existingAdmin = await AppAdmin.findOne({ email });
+
+    if (existingAdmin) {
+      return res.status(409).json({
+        success: false,
+        msg: "App admin with this email already exists"
+      });
+    }
+
+    const hashedPassword = await bcrypt.hash(password, 10);
+
+    const appAdmin = await AppAdmin.create({
+      name,
+      email,
+      password: hashedPassword
+    });
+
+    return res.status(201).json({
+      success: true,
+      msg: "App admin created successfully",
+      appAdmin: {
+        id: appAdmin._id,
+        name: appAdmin.name,
+        email: appAdmin.email
+      }
+    });
+
+  } catch (error) {
+    console.error("Create app admin error:", error);
+
+    return res.status(500).json({
+      success: false,
+      msg: "Failed to create app admin"
+    });
+  }
+};
+
+
+export const getAppAdmins = async (req, res) => {
+  try {
+    const appAdmins = await AppAdmin.find()
+      .select("-password")
+      .sort({ createdAt: -1 });
+
+
+    return res.status(200).json({
+      success: true,
+      data: appAdmins,
+    });
+
+  } catch (error) {
+    console.error("Get app admins error:", error);
+
+    return res.status(500).json({
+      success: false,
+      msg: "Failed to fetch app admins"
+    });
+  }
+};
+
+
+export const deleteAppAdmin = async (req, res) => {
+  try {
+    const { id } = req.body;
+
+    if (!id) {
+      return res.status(400).json({
+        success: false,
+        msg: "App admin ID is required"
+      });
+    }
+
+    const appAdmin = await AppAdmin.findById(id);
+
+    if (!appAdmin) {
+      return res.status(404).json({
+        success: false,
+        msg: "App admin not found"
+      });
+    }
+
+    await AppAdmin.deleteOne({ _id: id });
+
+    return res.status(200).json({
+      success: true,
+      msg: "App admin deleted successfully"
+    });
+
+  } catch (error) {
+    console.error("Delete app admin error:", error);
+
+    return res.status(500).json({
+      success: false,
+      msg: "Failed to delete app admin"
+    });
+  }
+};
+
+
+
+export const getStats = async (req, res) => {
+  try {
+    const [studentStats] = await Student.aggregate([
+      {
+        $group: {
+          _id: null,
+
+          totalStudents: {
+            $sum: 1
+          },
+
+          passesSent: {
+            $sum: {
+              $cond: [
+                { $eq: ["$isPaid", true] },
+                1,
+                0
+              ]
+            }
+          },
+
+          unpaid: {
+            $sum: {
+              $cond: [
+                { $eq: ["$isPaid", false] },
+                1,
+                0
+              ]
+            }
+          },
+
+          totalTicketsScanned: {
+            $sum: {
+              $cond: [
+                { $eq: ["$isScanned", true] },
+                1,
+                0
+              ]
+            }
+          },
+
+          yetToEnter: {
+            $sum: {
+              $cond: [
+                {
+                  $and: [
+                    { $eq: ["$isPaid", true] },
+                    { $eq: ["$isScanned", false] }
+                  ]
+                },
+                1,
+                0
+              ]
+            }
+          }
+        }
+      }
+    ]);
+
+    const totalAppAdmins = await AppAdmin.countDocuments();
+
+    const activeScanners = await AppAdmin.countDocuments({
+      isLoggedIn: true
+    });
+
+    const totalStudents = studentStats?.totalStudents ?? 0;
+    const passesSent = studentStats?.passesSent ?? 0;
+    const unpaid = studentStats?.unpaid ?? 0;
+    const totalTicketsScanned =
+      studentStats?.totalTicketsScanned ?? 0;
+    const yetToEnter = studentStats?.yetToEnter ?? 0;
+
+    const entryRate =
+      totalStudents > 0
+        ? Number(
+            ((totalTicketsScanned / totalStudents) * 100).toFixed(2)
+          )
+        : 0;
+
+    return res.status(200).json({
+      success: true,
+      stats: {
+        totalStudents,
+        passesSent,
+        unpaid,
+        totalTicketsScanned,
+        yetToEnter,
+        entryRate,
+        activeScanners,
+        totalScanners: totalAppAdmins
+      }
+    });
+
+  } catch (error) {
+    console.error("Get stats error:", error);
+
+    return res.status(500).json({
+      success: false,
+      msg: "Failed to fetch statistics"
     });
   }
 };
