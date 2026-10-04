@@ -37,7 +37,7 @@ const resendSendEmail = async (
     });
 
     const { data, error } = await resend.emails.send({
-      from: `Team Renaissance <${process.env.VERIFIED_FROM_EMAIL}>`,
+      from: `Student Council <${process.env.VERIFIED_FROM_EMAIL}>`,
       to,
       subject,
       html,

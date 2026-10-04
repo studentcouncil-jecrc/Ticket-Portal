@@ -1,0 +1,23 @@
+services:
+  - type: web
+    name: sdc-portal-api
+    runtime: node
+    rootDir: backend
+    buildCommand: npm ci
+    startCommand: npm start
+    healthCheckPath: /health
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: MONGO_URI
+        sync: false
+      - key: JWT_SECRET
+        sync: false
+      - key: APP_ADMIN_JWT_SECRET
+        sync: false
+      - key: VERIFIED_FROM_EMAIL
+        sync: false
+      - key: RESEND_API_KEY
+        sync: false
+      - key: CORS_ORIGINS
+        sync: false

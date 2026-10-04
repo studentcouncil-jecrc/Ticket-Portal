@@ -1,4 +1,4 @@
-import bcrypt from "bcrypt";
+import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import AppAdmin from "../models/app.admin.model.js";
 import BlacklistedToken from "../models/blacklistToken.model.js";
@@ -272,4 +272,3 @@ export const allowEntry = async (req, res) => {
     });
   }
 };
-

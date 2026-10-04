@@ -427,7 +427,7 @@ const fetchStats = async () => {
           </h2>
 
           <p className="text-sm text-gray-500 mt-1">
-            Renaissance 2026
+            Freshers 2026
           </p>
         </div>
 

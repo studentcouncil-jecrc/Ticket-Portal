@@ -1,8 +1,11 @@
 import multer from "multer";
 import path from "path";
 import fs from "fs";
+import os from "os";
 
-const uploadDir = "uploads/";
+// Render's filesystem is ephemeral. Store uploads in its writable temporary
+// directory and let the controller remove each file once it has been parsed.
+const uploadDir = path.join(os.tmpdir(), "sdc-portal-uploads");
 
 // Create uploads directory if it doesn't exist
 if (!fs.existsSync(uploadDir)) {

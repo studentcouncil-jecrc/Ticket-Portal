@@ -1,4 +1,4 @@
-import bcrypt from "bcrypt";
+import bcrypt from "bcryptjs";
 import  jwt from "jsonwebtoken";
 import {adminModel} from "../models/admin.model.js";
 import mongoose from "mongoose";
