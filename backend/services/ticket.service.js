@@ -369,7 +369,7 @@ JECRC
 
     const attachments = [
       {
-        filename: "RenaissancePass.png",
+        filename: "FreshersPass.png",
         content: finalBuffer
       }
     ];
