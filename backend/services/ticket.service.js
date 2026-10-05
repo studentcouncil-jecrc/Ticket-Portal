@@ -303,60 +303,62 @@ ctx.fillText(
     // 11. EMAIL
 
     const emailSubject =
-      "Your Ticket for Freshers ’26";
+      "🎟️ Your Entry Pass for Freshers '26 | JECRC";
 
 
     const emailBody = `
       <div style="font-family: Arial; padding:20px">
 
-      <p>
-      Freshers ’26<br/>
-      EVENT PASS
-      </P>
+        <p>Dear ${student.name},</p>
 
-        <p>Hi ${student.name},</p>
+        <p>Welcome to the JECRC family!</p>
 
         <p>
-Thank you for your response for Freshers ’26. Your entry pass is attached to this email. Please present this ticket at the event entrance for scanning.
+Thank you for registering for Freshers '26. We are delighted to share your official entry pass, which is attached to this email. Kindly present this ticket at the event entrance for scanning.
         </p>
 
 <p>
-  📅 Date<br/>
-  9th October 2026
+✦  EVENT DETAILS
 </p>
 
 <p>
-📍 Venue<br/>
-Central Lawn, JECRC
+    Date   →   Friday, 9th October 2026 <br/>
+    Time   →   4:30 PM onwards <br/>
+    Venue  →   Central Lawn, JECRC <br/>
 </p>
 
 <p>
-🕒 Time<br/>
-4:30 PM onwards
+✦  BEFORE YOU ARRIVE
 </p>
 
         <p>
-⚠️ Important Information
+•  It is mandatory to bring the e-ticket sent to your email.<br/>
+•  All students must carry their College ID or a valid ID proof.<br/>
+•  The details on the pass must match the ID you carry for entry.<br/>
+•  Bus facilities will be provided after the event.<br/>
         </p>
 
-        <p>
-•⁠  ⁠It is mandatory to bring the E-ticket sent to your email.<br/>
-•⁠  ⁠The details on the pass must match the ID you carry for entry.<br/>
-•⁠  ⁠All students must bring their College ID or a valid ID proof to Freshers ’26.<br/>
-•⁠  ⁠Entry gates will be closed at 5:00 PM sharp.<br/>
-•⁠  ⁠Bus facilities will be provided.<br/>
-•⁠  ⁠College hostel gates will be closed at 4:00 PM. Entry passes will be checked by organizing team.<br/>
-•⁠  ⁠No vehicles will be permitted inside the college premises during the event.<br/>
-        </p>
+<p>
+✦  PLEASE NOTE
+</p>
 
         <p>
-✨🎶<br/>
-Get ready to experience the ultimate Freshers celebration at JECRC!<br/>
-Get ready for the music, energy, memories and the Cinephile experience. 🎬
+ •  Entry gates will close at 4:30 PM sharp.<br/>
+ •  College hostel gates will close at 4:00 PM. Entry passes will be checked by the organizing team.<br/>
+ •  No vehicles will be permitted inside the college premises duringthe event.<br/>
         </p>
 
-        <p>
-Best Regards,<br/>
+<p> 
+An evening of music, energy, memories and the Cinephile experience awaits you. Get ready for the ultimate Freshers celebration at JECRC! 🎬
+<p/>
+
+<p> 
+We look forward to welcoming you.
+<p/>
+
+<p> Warm Regards, <p/>
+
+<p>
 Student Council<br/>
 JECRC
         </p>
