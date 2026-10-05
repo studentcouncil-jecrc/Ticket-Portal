@@ -311,8 +311,6 @@ ctx.fillText(
 
         <p>Dear ${student.name},</p>
 
-        <p>Welcome to the JECRC family!</p>
-
         <p>
 Thank you for registering for Freshers '26. We are delighted to share your official entry pass, which is attached to this email. Kindly present this ticket at the event entrance for scanning.
         </p>
