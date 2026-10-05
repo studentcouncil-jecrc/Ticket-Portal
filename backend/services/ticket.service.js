@@ -344,6 +344,7 @@ Thank you for registering for Freshers '26. We are delighted to share your offic
  •  Entry gates will close at 4:30 PM sharp.<br/>
  •  College hostel gates will close at 4:00 PM. Entry passes will be checked by the organizing team.<br/>
  •  No vehicles will be permitted inside the college premises duringthe event.<br/>
+ •  Once you exit the college premises, re-entry will not be permitted.<br/>
         </p>
 
 <p> 
