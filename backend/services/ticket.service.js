@@ -15,8 +15,8 @@ const __dirname = path.dirname(__filename);
 
 // CONSTANTS
 
-const WIDTH = 1250;
-const HEIGHT = 418;
+const WIDTH = 866;
+const HEIGHT = 1636;
 
 // GENERATE QR CODE
 
@@ -149,12 +149,12 @@ export const processStudentTicket = async (mId) => {
 
     // 8. QR CODE
 
-    const qrWidth = 198;
-    const qrHegiht = 198;
+    const qrWidth = 476;
+    const qrHegiht = 476;
 
-    const qrX = 104;
+    const qrX = 195;
 
-    const qrY = 110;
+    const qrY = 356;
 
 
     const resizedQr = await sharp(qrBuffer)
@@ -178,7 +178,7 @@ export const processStudentTicket = async (mId) => {
 
 // 9. TEXT SECTION
 
-const textX = 758;
+const textX = 225;
 
 ctx.fillStyle = "#000000";
 ctx.textAlign = "left";
@@ -241,7 +241,7 @@ const nameSize = fitFontSize(
   nameText,
   nameFont,
   maxTextWidth,
-  65,
+  80,
   40,
   1
 );
@@ -252,7 +252,7 @@ ctx.font =
 ctx.fillText(
   nameText,
   textX,
-  175
+  1364
 );
 
 
@@ -279,7 +279,7 @@ const branchYearSize = fitFontSize(
   branchYearText,
   branchYearFont,
   maxTextWidth,
-  60,
+  80,
   40,
   1
 );
@@ -290,7 +290,7 @@ ctx.font =
 ctx.fillText(
   branchYearText,
   textX ,
-  245
+  1434
 );
 
 
