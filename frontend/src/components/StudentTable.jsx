@@ -11,6 +11,7 @@ function StudentTable() {
 
   const [search, setSearch] = useState('');
   const [searchLoading, setSearchLoading] = useState(false);
+  const [paymentFilter, setPaymentFilter] = useState('all');
 
 
   // FETCH STUDENTS
@@ -109,7 +110,17 @@ function StudentTable() {
     }
   };
 
+const filteredStudents = students.filter((student) => {
+  if (paymentFilter === 'paid') {
+    return student.isPaid === true;
+  }
 
+  if (paymentFilter === 'unpaid') {
+    return student.isPaid === false;
+  }
+
+  return true;
+});
   // DELETE STUDENT
 
   const handleDelete = async (id) => {
@@ -337,37 +348,59 @@ function StudentTable() {
 
       {/* ================= SEARCH ================= */}
 
-      <div className="relative max-w-md mb-6">
+<div className="flex flex-wrap items-center justify-between mb-6">
+  
+  {/* SEARCH */}
+  <div className="relative w-full max-w-md">
+    <input
+      type="text"
+      value={search}
+      onChange={handleSearch}
+      placeholder="Search by email..."
+      className="
+        w-full
+        px-4
+        py-2.5
+        border
+        border-gray-300
+        rounded-lg
+        outline-none
+        focus:ring-2
+        focus:ring-blue-500
+      "
+    />
 
-        <input
-          type="text"
-          value={search}
-          onChange={handleSearch}
-          placeholder="Search by email..."
-          className="
-            w-full
-            px-4
-            py-2.5
-            border
-            border-gray-300
-            rounded-lg
-            outline-none
-            focus:ring-2
-            focus:ring-blue-500
-          "
-        />
-
-        {searchLoading && (
-
-          <div className="absolute right-3 top-3">
-
-            <Loader />
-
-          </div>
-
-        )}
-
+    {searchLoading && (
+      <div className="absolute right-3 top-3">
+        <Loader />
       </div>
+    )}
+  </div>
+
+  {/* PAYMENT FILTER */}
+  <select
+    value={paymentFilter}
+    onChange={(e) => setPaymentFilter(e.target.value)}
+    className="
+      px-4
+      py-2.5
+      border
+      border-gray-300
+      rounded-lg
+      bg-white
+      text-gray-700
+      outline-none
+      focus:ring-2
+      focus:ring-blue-500
+      cursor-pointer
+    "
+  >
+    <option value="all">All</option>
+    <option value="paid">Paid</option>
+    <option value="unpaid">Unpaid</option>
+  </select>
+
+</div>
 
 
       {/* ================= TABLE ================= */}
@@ -422,7 +455,7 @@ function StudentTable() {
 
             <tbody>
 
-              {students.length === 0 ? (
+              {filteredStudents.length === 0? (
 
                 <tr>
 
@@ -437,7 +470,7 @@ function StudentTable() {
 
               ) : (
 
-                students.map(student => (
+                filteredStudents.map(student => (
 
                   <tr
                     key={student._id}
