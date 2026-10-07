@@ -394,6 +394,21 @@ export const uploadExcel = async (req, res) => {
     }
 
 
+console.log("========== DUPLICATES ==========");
+
+duplicateSkipped.forEach((duplicate) => {
+  console.log(
+    `Sheet: ${duplicate.sheet} | Row: ${duplicate.row} | ` +
+    `Email: ${duplicate.email || "N/A"} | ` +
+    `Roll No: ${duplicate.studentId || "N/A"} | ` +
+    `Reason: ${duplicate.reason}`
+  );
+});
+
+console.log("Total duplicates:", duplicateSkipped.length);
+console.log("================================");
+
+
     // 8. Response
 
     return res.status(201).json({
