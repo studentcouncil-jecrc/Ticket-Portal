@@ -427,7 +427,7 @@ const filteredStudents = students.filter((student) => {
                 </th>
 
                 <th className="text-left px-4 py-3 text-sm font-medium">
-                  Roll No
+                  Phone Number
                 </th>
 
                 <th className="text-left px-4 py-3 text-sm font-medium">

@@ -133,7 +133,7 @@ function CreateStudent({ onClose, onStudentCreated }) {
 
           <div>
             <label className="block text-sm font-medium mb-1">
-              Roll No
+              Phone Number
             </label>
 
             <input
@@ -143,7 +143,7 @@ function CreateStudent({ onClose, onStudentCreated }) {
               onChange={handleChange}
               required
               className="w-full border border-gray-300 rounded-lg px-3 py-2 outline-none focus:ring-2 focus:ring-blue-500"
-              placeholder="Roll number"
+              placeholder="Phone number"
             />
           </div>
 
