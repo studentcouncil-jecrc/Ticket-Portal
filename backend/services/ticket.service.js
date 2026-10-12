@@ -27,7 +27,7 @@ export async function generateQRCode(data) {
     margin: 0,
     version: 10,
     color: {
-      dark: "#ffffff",
+      dark: "#000000",
       light: "#00000000"
     }
   });
@@ -75,9 +75,6 @@ export const processStudentTicket = async (mId) => {
 
     const qrPayload = JSON.stringify({
       mId: student._id.toString(),
-      name: student.name,
-      branch: student.branch,
-      year: student.Year,
     });
 
     const qrBuffer = await generateQRCode(qrPayload);
@@ -99,6 +96,13 @@ export const processStudentTicket = async (mId) => {
       __dirname,
       "../assets/fonts/Bebas_Neue/BebasNeue-Regular.ttf"
     );
+
+const emailerPath = path.join(
+  __dirname,
+  "../assets/emailer.png"
+);
+
+const emailerBuffer = await fs.readFile(emailerPath);
 
 
     // Make sure required files exist
@@ -149,12 +153,12 @@ export const processStudentTicket = async (mId) => {
 
     // 8. QR CODE
 
-    const qrWidth = 476;
-    const qrHegiht = 476;
+    const qrWidth = 546;
+    const qrHegiht = 546;
 
-    const qrX = 195;
+    const qrX = 160;
 
-    const qrY = 356;
+    const qrY = 330;
 
 
     const resizedQr = await sharp(qrBuffer)
@@ -303,75 +307,258 @@ ctx.fillText(
     // 11. EMAIL
 
     const emailSubject =
-      "🎟️ Your Entry Pass for Freshers '26 | JECRC";
+      "🎟️ Your Entry Pass for Navrang '26 | JECRC";
 
 
-    const emailBody = `
-      <div style="font-family: Arial; padding:20px">
+const emailBody = `
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
 
-        <p>Dear ${student.name},</p>
+<body style="margin:0; padding:0; background-color:#f4f4f7; font-family:Arial, Helvetica, sans-serif; color:#292735;">
 
-        <p>
-Thank you for registering for Freshers '26. We are delighted to share your official entry pass, which is attached to this email. Kindly present this ticket at the event entrance for scanning.
-        </p>
+  <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0"
+    style="background-color:#f4f4f7; padding:24px 10px;">
 
-<p>
-✦  EVENT DETAILS
-</p>
+    <tr>
+      <td align="center">
 
-<p>
-    Date   →   Friday, 9th October 2026 <br/>
-    Time   →   4:30 PM onwards <br/>
-    Venue  →   Central Lawn, JECRC <br/>
-</p>
+        <table role="presentation" width="600" cellpadding="0" cellspacing="0" border="0"
+          style="width:100%; max-width:600px; background-color:#ffffff; border:1px solid #e8e5ee; border-radius:12px; overflow:hidden;">
 
-<p>
-✦  BEFORE YOU ARRIVE
-</p>
+          <!-- HEADER IMAGE -->
+          <tr>
+            <td align="center"
+              style="background-color:#0D5BA9; padding:0;">
 
-        <p>
-•  It is mandatory to bring the e-ticket sent to your email.<br/>
-•  All students must carry their College ID or a valid ID proof.<br/>
-•  The details on the pass must match the ID you carry for entry.<br/>
-•  Bus facilities will be provided after the event.<br/>
-        </p>
+<img
+  src="cid:emailer"
+  alt="Navrang '26"
+  width="600"
+  style="display:block; width:100%; max-width:600px; height:auto; border:0;"
+/>
 
-<p>
-✦  PLEASE NOTE
-</p>
+            </td>
+          </tr>
 
-        <p>
- •  Entry gates will close at 4:30 PM sharp.<br/>
- •  College hostel gates will close at 4:00 PM. Entry passes will be checked by the organizing team.<br/>
- •  No vehicles will be permitted inside the college premises duringthe event.<br/>
- •  Once you exit the college premises, re-entry will not be permitted.<br/>
-        </p>
+          <!-- INTRODUCTION -->
+          <tr>
+            <td style="padding:32px 30px 18px;">
 
-<p> 
-An evening of music, energy, memories and the Cinephile experience awaits you. Get ready for the ultimate Freshers celebration at JECRC! 🎬
-<p/>
+              <h2 style="margin:0 0 14px; font-size:23px; line-height:1.4; color:#292735;">
+                Greetings from Student Council, JECRC
+              </h2>
 
-<p> 
-We look forward to welcoming you.
-<p/>
+              <p style="margin:0; font-size:15px; line-height:1.8; color:#686673;">
+                Thank you for registering for Navrang '26! Your official entry pass
+                is attached to this email. Please present it at the event entrance
+                for scanning.
+              </p>
 
-<p> Warm Regards, <p/>
+            </td>
+          </tr>
 
-<p>
-Student Council<br/>
-JECRC
-        </p>
+          <!-- EVENT DETAILS -->
+          <tr>
+            <td style="padding:12px 30px 24px;">
 
-      </div>
-    `;
+              <table role="presentation" width="100%" cellpadding="0" cellspacing="0"
+                style="background-color:#faf8fd; border:1px solid #e9e3f2; border-radius:10px;">
+
+                <tr>
+                  <td style="padding:17px 18px; border-bottom:1px solid #e9e3f2;">
+
+                    <div style="font-size:12px; font-weight:bold; letter-spacing:1px; color:#858095;">
+                      DATE
+                    </div>
+
+                    <div style="margin-top:6px; font-size:16px; font-weight:bold; color:#34313e;">
+                      Friday, 9th October 2026
+                    </div>
+
+                  </td>
+                </tr>
+
+                <tr>
+                  <td style="padding:17px 18px; border-bottom:1px solid #e9e3f2;">
+
+                    <div style="font-size:12px; font-weight:bold; letter-spacing:1px; color:#858095;">
+                      VENUE
+                    </div>
+
+                    <div style="margin-top:6px; font-size:16px; font-weight:bold; color:#34313e;">
+                      Central Lawn, JECRC
+                    </div>
+
+                  </td>
+                </tr>
+
+                <tr>
+                  <td style="padding:17px 18px;">
+
+                    <div style="font-size:12px; font-weight:bold; letter-spacing:1px; color:#858095;">
+                      TIME
+                    </div>
+
+                    <div style="margin-top:6px; font-size:16px; font-weight:bold; color:#34313e;">
+                      5:00 PM onwards
+                    </div>
+
+                  </td>
+                </tr>
+
+              </table>
+
+            </td>
+          </tr>
+
+          <!-- IMPORTANT INFORMATION -->
+          <tr>
+            <td style="padding:0 30px 26px;">
+
+              <table role="presentation" width="100%" cellpadding="0" cellspacing="0"
+                style="background-color:#fff7e9; border:1px solid #f4dfb9; border-radius:10px;">
+
+                <tr>
+                  <td style="padding:20px 20px 10px;">
+
+                    <h3 style="margin:0; font-size:18px; line-height:1.5; color:#67471a;">
+                      ⚠ Important information
+                    </h3>
+
+                  </td>
+                </tr>
+
+                <tr>
+                  <td style="padding:0 20px 18px;">
+
+                    <ul style="margin:0; padding-left:20px; font-size:14px; line-height:1.8; color:#625748;">
+
+                      <li style="padding-bottom:10px;">
+                        Entry gates will be closed by 5:00 PM.
+                      </li>
+
+                      <li style="padding-bottom:10px;">
+                        Entry is permitted only on showing both your ID card and this pass.
+                      </li>
+
+                      <li style="padding-bottom:10px;">
+                        This pass is valid for one person only and cannot be transferred.
+                      </li>
+
+                      <li style="padding-bottom:10px;">
+                        Once you exit the college premises, re-entry is not permitted.
+                      </li>
+
+                      <li style="padding-bottom:10px;">
+                       Outside food, drinks and prohibited items are not allowed inside the venue.
+                      </li>
+
+                      <li>
+                        The organizing team reserves the right to remove anyone found creating a disturbance or involved in any act of indiscipline from the college premises. Kindly adhere to the rules and regulations.
+                      </li>
+
+                    </ul>
+
+                  </td>
+                </tr>
+
+              </table>
+
+            </td>
+          </tr>
+
+          <!-- CLOSING -->
+          <tr>
+            <td align="center" style="padding:4px 30px 30px;">
+
+              <p style="margin:12px 0 5px; font-size:15px; color:#686673;">
+                See You on Dance Floor!
+              </p>
+
+              <p style="margin:0; font-size:15px; line-height:1.8; font-weight:bold; color:#34313e;">
+                Student Council, JECRC
+              </p>
+
+            </td>
+          </tr>
+
+          <!-- CONTACT SECTION -->
+          <tr>
+            <td style="padding:0 30px 28px;">
+
+              <table role="presentation" width="100%" cellpadding="0" cellspacing="0"
+                style="background-color:#f7f4fa; border-radius:10px;">
+
+                <tr>
+                  <td align="center" style="padding:22px 15px;">
+
+                    <p style="margin:0 0 15px; font-size:13px; color:#858095;">
+                      Questions? Reach the Student Council:
+                    </p>
+
+                    <p style="margin:0; font-size:14px; line-height:2;">
+
+                      <a href="mailto:studentcouncil@jecrc.ac.in"
+                        style="color:#5c469f; text-decoration:underline;">
+                        studentcouncil@jecrc.ac.in
+                      </a>
+
+                      <br>
+
+                      <a href="tel:+918239022830"
+                        style="color:#5c469f; text-decoration:underline;">
+                        +91 82390 22830
+                      </a>
+
+                    </p>
+
+                  </td>
+                </tr>
+
+              </table>
+
+            </td>
+          </tr>
+
+          <!-- FOOTER -->
+          <tr>
+            <td align="center"
+              style="padding:20px 24px; border-top:1px solid #eeeaf2;">
+
+              <p style="margin:0; font-size:12px; line-height:1.7; color:#9692a0;">
+                You're receiving this email because you registered for Navrang '26.
+              </p>
+
+            </td>
+          </tr>
+
+        </table>
+
+      </td>
+    </tr>
+
+  </table>
+
+</body>
+</html>
+`;
 
 
-    const attachments = [
-      {
-        filename: "FreshersPass.png",
-        content: finalBuffer
-      }
-    ];
+const attachments = [
+  {
+    filename: "NavrangPass.png",
+    content: finalBuffer
+  },
+  {
+    filename: "emailer.png",
+    content: emailerBuffer,
+    contentId: "emailer"
+  }
+];
 
 
     // 12. SEND EMAIL
