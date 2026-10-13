@@ -106,8 +106,9 @@ export const sendTicket = async (req, res) => {
       });
     }
 
+    const adminId = req.user.id;
     // Start ticket processing
-enqueueEmail(() => processStudentTicket(id))
+enqueueEmail(() => processStudentTicket(id, adminId))
   .catch(async (err) => {
     console.error("Ticket processing failed:", err?.message || err);
 
@@ -116,7 +117,9 @@ enqueueEmail(() => processStudentTicket(id))
       {
         $set: {
           ticketStatus: "FAILED",
-          isPaid: false
+          isPaid: false,
+          markedAt: null,
+          markedBy: null
         }
       }
     );

@@ -36,7 +36,7 @@ export async function generateQRCode(data) {
 
 // PROCESS STUDENT TICKET
 
-export const processStudentTicket = async (mId) => {
+export const processStudentTicket = async (mId, adminId) => {
 
   try {
 
@@ -581,7 +581,9 @@ const attachments = [
       {
         $set: {
           ticketStatus: "SENT",
-          isPaid: true
+          isPaid: true,
+      markedBy: adminId,
+      markedAt: new Date()
         }
       }
     );
