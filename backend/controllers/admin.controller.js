@@ -334,7 +334,7 @@ export const searchStudents = async (req, res) => {
       }
     })
       .select("name studentId email phone branch Year isPaid")
-      .limit(10)
+
       .lean();
 
     return res.status(200).json({
