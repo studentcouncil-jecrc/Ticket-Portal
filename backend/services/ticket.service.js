@@ -376,7 +376,7 @@ const emailBody = `
                     </div>
 
                     <div style="margin-top:6px; font-size:16px; font-weight:bold; color:#34313e;">
-                      Friday, 9th October 2026
+                      Saturday, 17th October 2026
                     </div>
 
                   </td>
